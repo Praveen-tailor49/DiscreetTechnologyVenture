@@ -27,8 +27,6 @@ const VehicleDetails = () => {
         }
     }, [vehicleOnlineStatus])
 
-
-    console.log(JSON.parse(localStorage.getItem("vehicle_data")));
     useEffect(() => {
         if (vehicleStateEmty) {
             resetState()
