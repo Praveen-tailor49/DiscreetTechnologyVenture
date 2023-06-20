@@ -5,7 +5,7 @@ import "../App.css"
 import DataTable from "react-data-table-component"
 import { useDispatch, useSelector } from "react-redux"
 import { delete_Vehicle, get_Vehicle } from "../Redux/action/Vehicle"
-import { Vehicle_Filter_Data, Vehicle_Single_Data, Vehicle_Status } from "../Redux/actionType"
+import { Vehicle_Data, Vehicle_Filter_Data, Vehicle_Single_Data, Vehicle_Status } from "../Redux/actionType"
 import { Filter } from "../Filter/Filter";
 
 const ViewReport = () => {
@@ -13,13 +13,20 @@ const ViewReport = () => {
     const dispatch = useDispatch()
     const VehicleData = useSelector((state) => state.Vehicle.VehicleData)
     const VehicleFilterData = useSelector((state) => state.Vehicle.VehicleFilterData)
+    const vehicleOnlineStatus = useSelector((state) => state.Vehicle.vehicleOnlineStatus)
+    console.log(vehicleOnlineStatus);
 
     const [dateFrom, setDateFrom] = useState('')
     const [dateTo, setDateTo] = useState('')
 
     useEffect(() => {
-        if (VehicleData.length === 0) dispatch(get_Vehicle())
-    }, [])
+        if (vehicleOnlineStatus) {
+            dispatch(get_Vehicle())
+        } else {
+            dispatch({ type: Vehicle_Data, payload: JSON.parse(localStorage.getItem("vehicle_data"))?JSON.parse(localStorage.getItem("vehicle_data")):[] })
+            dispatch({ type: Vehicle_Filter_Data, payload: JSON.parse(localStorage.getItem("vehicle_data"))?JSON.parse(localStorage.getItem("vehicle_data")):[] })
+        }
+    }, [vehicleOnlineStatus])
 
     const columns = [
         {
@@ -161,7 +168,7 @@ const ViewReport = () => {
                                                 />
                                             </div>
                                             <div className='col-2' >
-                                                <button type="button" class="btn btn-light" onClick={()=>searchData()}>Search</button>
+                                                <button type="button" class="btn btn-light" onClick={() => searchData()}>Search</button>
                                             </div>
                                         </div>
                                     </div>

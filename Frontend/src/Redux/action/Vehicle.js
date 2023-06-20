@@ -14,15 +14,23 @@ export const get_Vehicle = () => async (dispatch) => {
       }
 };
 
-export const save_Vehicle = (formData) => async (dispatch) => { 
+export const save_Vehicle = (formData, type, len) => async (dispatch) => { 
+  
   dispatch({ type: Vehicle_State_Emty, payload: false }); 
     dispatch({ type: Error_Status, payload: false })
     try {
         const { data } = await api.save_Vehicle(formData);
-        alert('Add Vehicle')
-         dispatch(get_Vehicle());
-         dispatch({ type: Error_Status, payload: false })
-         dispatch({ type: Vehicle_State_Emty, payload: true }); 
+        if(type === 'Off'){
+          if(JSON.parse(localStorage.getItem("vehicle_data")).length === len){
+            localStorage.removeItem("vehicle_data")
+            dispatch({ type: Error_Status, payload: false })
+          } 
+        } else {
+          alert('Successfuly Add Vehicle')
+          dispatch(get_Vehicle());
+          dispatch({ type: Error_Status, payload: false })
+          dispatch({ type: Vehicle_State_Emty, payload: true }); 
+        }
       } catch (error) {
         alert('Not Add Vehicle')
         dispatch({ type: Vehicle_State_Emty, payload: false }); 
